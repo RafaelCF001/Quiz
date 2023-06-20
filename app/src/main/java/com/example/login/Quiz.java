@@ -1,14 +1,15 @@
 package com.example.login;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -17,14 +18,17 @@ import java.util.Collections;
 public class Quiz extends AppCompatActivity implements View.OnClickListener, Runnable{
 
     private String prova = "enem";
-    private String categoria = "Linguagens, Códigos e suas Tecnologias";
+    private String categoria = "Matemática e suas Tecnologias";
 
     private TextView vidas, categoria_text, enunciado;
     private ProgressBar barra;
     private Button btn1, btn2, btn3, btn4, btn5, proximo;
 
-    private ArrayList<Pergunta> lista;
-    private int indice, contaAcerto, limitePerguntas;
+    private ArrayList<Pergunta> ListaObmep;
+    private ArrayList<Pergunta> ListaEnem;
+    private ArrayList<Pergunta> ListaAux;
+
+    private int indice, contaAcerto = 5 , limitePerguntas;
     private String mod1, mod2, textRadioSelecionado;
     private Handler handler;
 
@@ -40,20 +44,44 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener, Run
         barra = (ProgressBar) findViewById(R.id.barra);
 
         btn1 = (Button) findViewById(R.id.button1);
+        btn1.setOnClickListener(this);
         btn2 = (Button) findViewById(R.id.button2);
+        btn2.setOnClickListener(this);
         btn3 = (Button) findViewById(R.id.button3);
+        btn3.setOnClickListener(this);
         btn4 = (Button) findViewById(R.id.button4);
+        btn4.setOnClickListener(this);
         btn5 = (Button) findViewById(R.id.button5);
+        btn5.setOnClickListener(this);
         proximo = (Button) findViewById(R.id.proximo);
+        proximo.setOnClickListener(this);
 
         // Selecionar somente as questões cuja tabela seja = prova e cuja categoria seja = categoria
 
         // montar array com as questoes selecionadas
 
-        limitePerguntas = 5; // mudar
         handler = new Handler();
-        lista = new ArrayList<Pergunta>();
-        carregaPerguntas();
+        ListaObmep = new ArrayList<Pergunta>();
+        ListaEnem = new ArrayList<Pergunta>();
+        ListaAux = new ArrayList<Pergunta>();
+        Utils util  = new Utils();
+        ListaEnem = util.getListaEnem();
+        ListaObmep = util.getListaObmep();
+
+        if(prova.equals("enem")){
+            for (Pergunta elemento : ListaEnem) {
+                if(elemento.getCategoria().equals(categoria))
+                ListaAux.add(elemento);
+            }
+        }else{
+            for (Pergunta elemento : ListaObmep) {
+                if(elemento.getCategoria().equals(categoria))
+                ListaAux.add(elemento);
+            };
+        }
+        limitePerguntas = ListaAux.size(); // mudar pra lista.lenght
+
+        //ListaAux = ListaObmep;
 
         if(savedInstanceState != null){
             indice = savedInstanceState.getInt("chave");
@@ -63,165 +91,98 @@ public class Quiz extends AppCompatActivity implements View.OnClickListener, Run
         }
         carregaPerguntanoDesign();
     }
-    public void carregaPerguntas(){
-        Pergunta a = new Pergunta();
-        a.setPergunta("Qual a cor do cavalo branco de Napoleão?");
-        a.setRes1("Branco");
-        a.setRes2("Verde");
-        a.setRes3("Azul");
-        a.setRes4("Cinza");
-        a.setRes5("Cinza");
-        a.setResposta("Branco");
-        lista.add(a);
 
-        Pergunta b = new Pergunta();
-        b.setPergunta("Quanto é 2 * 2: ");
-        b.setRes1("1");
-        b.setRes2("2");
-        b.setRes3("3");
-        b.setRes4("4");
-        b.setRes5("4");
-        b.setResposta("4");
-        lista.add(b);
-
-        Pergunta c = new Pergunta();
-        c.setPergunta("Quanto é 5 - 2: ");
-        c.setRes1("1");
-        c.setRes2("2");
-        c.setRes3("3");
-        c.setRes4("4");
-        c.setRes5("4");
-        c.setResposta("3");
-        lista.add(c);
-
-        Pergunta d = new Pergunta();
-        d.setPergunta("Quem foi o Rei Arthur?");
-        d.setRes1("Principe");
-        d.setRes2("Presidente");
-        d.setRes3("Rei");
-        d.setRes4("Desenvolvedor");
-        d.setResposta("Rei");
-        d.setRes5("4");
-        lista.add(d);
-
-        Pergunta e = new Pergunta();
-        e.setPergunta("Em qual país fica o estado do pão de queijo Minas Gerais?");
-        e.setRes1("Argentina");
-        e.setRes2("EUA");
-        e.setRes3("Brasil");
-        e.setRes4("Itália");
-        e.setResposta("Brasil");
-        lista.add(e);
-
-        Pergunta f = new Pergunta();
-        f.setPergunta("Quanto é 1+1");
-        f.setRes1("1");
-        f.setRes2("11");
-        f.setRes3("2");
-        f.setRes4("12");
-        f.setResposta("2");
-        f.setRes5("4");
-        lista.add(f);
-
-        Pergunta g = new Pergunta();
-        g.setPergunta("Quanto é 2 - 2: ");
-        g.setRes1("0");
-        g.setRes2("1");
-        g.setRes3("2");
-        g.setRes4("3");
-        g.setRes5("4");
-        g.setResposta("0");
-        lista.add(g);
-
-        Pergunta h = new Pergunta();
-        h.setPergunta("Quanto é 6 / 2: ");
-        h.setRes1("4");
-        h.setRes2("3");
-        h.setRes3("2");
-        h.setRes4("1");
-        h.setRes5("4");
-        h.setResposta("3");
-        lista.add(h);
-
-        Pergunta i = new Pergunta();
-        i.setPergunta("Quanto é 10 * 2:");
-        i.setRes1("10");
-        i.setRes2("5");
-        i.setRes3("20");
-        i.setRes4("40");
-        i.setRes5("4");
-        i.setResposta("20");
-        lista.add(i);
-
-        Pergunta j = new Pergunta();
-        j.setPergunta("Quanto é 10 + 2");
-        j.setRes1("5");
-        j.setRes2("102");
-        j.setRes3("12");
-        j.setRes4("22");
-        j.setRes5("4");
-        j.setResposta("12");
-        lista.add(j);
-    }
-    public void carregaPerguntanoDesign(){
-        barra.setProgress(0);
-        Collections.shuffle(lista);
-        vidas.append(Integer.toString(contaAcerto));
-
-        enunciado.setText(lista.get(indice).getPergunta());
-        btn1.setText((lista.get(indice).getRes1()));
-        btn2.setText((lista.get(indice).getRes2()));
-        btn3.setText((lista.get(indice).getRes3()));
-        btn4.setText((lista.get(indice).getRes4()));
-        btn5.setText((lista.get(indice).getRes5()));
-
-    }
     public void verificaResultado(){
-        btn1.setEnabled(false);
-        btn2.setEnabled(false);
-        btn3.setEnabled(false);
-        btn4.setEnabled(false);
-        btn5.setEnabled(false);
-        proximo.setEnabled(false);
-
-        if(textRadioSelecionado.compareToIgnoreCase(lista.get(indice).getResposta()) == 0){
+        Log.d("##",textRadioSelecionado);
+        if(textRadioSelecionado.compareToIgnoreCase(ListaObmep.get(indice).getResposta()) == 0){
             contaAcerto++;
+        }else{
+            contaAcerto--;
         }
+        vidas.setText(Integer.toString(contaAcerto));
         barra.setProgress(barra.getProgress() + barra.getMax()/limitePerguntas);
         if(indice >= limitePerguntas ){
             //acabou o quiz e vai para outra tela e de lá redireciona para o jogo novamente.
         }
         else{
-            handler.postDelayed(this,3000);
+            handler.postDelayed(this,200);
         }
 
     }
+    public void carregaPerguntanoDesign(){
+        barra.setProgress(0);
+        Collections.shuffle(ListaAux);
+        vidas.setText(Integer.toString(contaAcerto));
+        categoria_text.setText(categoria);
 
+        enunciado.setText(ListaAux.get(indice).getPergunta());
+        btn1.setText((ListaAux.get(indice).getRes1()));
+        btn2.setText((ListaAux.get(indice).getRes2()));
+        btn3.setText((ListaAux.get(indice).getRes3()));
+        btn4.setText((ListaAux.get(indice).getRes4()));
+        btn5.setText((ListaAux.get(indice).getRes5()));
+
+    }
     @Override
     public void onClick(View view) {
         if(view == proximo){
-            proximo.setEnabled(false);
             verificaResultado();
         }
         if(view == btn1){
             textRadioSelecionado = (String) btn1.getText();
+            btn1.setTextColor(Color.RED);
+            btn2.setTextColor(Color.WHITE);
+            btn3.setTextColor(Color.WHITE);
+            btn4.setTextColor(Color.WHITE);
+            btn5.setTextColor(Color.WHITE);
         }
         if(view == btn2){
             textRadioSelecionado = (String) btn2.getText();
+            btn1.setTextColor(Color.WHITE);
+            btn2.setTextColor(Color.RED);
+            btn3.setTextColor(Color.WHITE);
+            btn4.setTextColor(Color.WHITE);
+            btn5.setTextColor(Color.WHITE);
         }
         if(view == btn3){
             textRadioSelecionado = (String) btn3.getText();
+            btn1.setTextColor(Color.WHITE);
+            btn2.setTextColor(Color.WHITE);
+            btn3.setTextColor(Color.RED);
+            btn4.setTextColor(Color.WHITE);
+            btn5.setTextColor(Color.WHITE);
         }
         if(view == btn4){
             textRadioSelecionado = (String) btn4.getText();
+            btn1.setTextColor(Color.WHITE);
+            btn2.setTextColor(Color.WHITE);
+            btn3.setTextColor(Color.WHITE);
+            btn4.setTextColor(Color.RED);
+            btn5.setTextColor(Color.WHITE);
         }
         if(view == btn5){
             textRadioSelecionado = (String) btn5.getText();
+            btn1.setTextColor(Color.WHITE);
+            btn2.setTextColor(Color.WHITE);
+            btn3.setTextColor(Color.WHITE);
+            btn4.setTextColor(Color.WHITE);
+            btn5.setTextColor(Color.RED);
         }
     }
 
     @Override
     public void run() {
-
+        indice ++;
+        enunciado.setText(ListaAux.get(indice).getPergunta());
+        btn1.setText((ListaAux.get(indice).getRes1()));
+        btn2.setText((ListaAux.get(indice).getRes2()));
+        btn3.setText((ListaAux.get(indice).getRes3()));
+        btn4.setText((ListaAux.get(indice).getRes4()));
+        btn5.setText((ListaAux.get(indice).getRes5()));
+        btn1.setTextColor(Color.WHITE);
+        btn2.setTextColor(Color.WHITE);
+        btn3.setTextColor(Color.WHITE);
+        btn4.setTextColor(Color.WHITE);
+        btn5.setTextColor(Color.WHITE);
     }
 }

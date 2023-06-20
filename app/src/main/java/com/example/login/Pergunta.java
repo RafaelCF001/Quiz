@@ -1,7 +1,7 @@
 package com.example.login;
 
 public class Pergunta {
-    private String pergunta, resposta;
+    private String pergunta, resposta, categoria, url;
     private String res1, res2, res3, res4, res5;
 
     public String getResposta() {
@@ -61,5 +61,21 @@ public class Pergunta {
 
     public void setRes5(String res5) {
         this.res5 = res5;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
