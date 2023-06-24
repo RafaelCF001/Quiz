@@ -1,8 +1,8 @@
 package com.example.login;
 
-public class Login {
+public class LoginClass {
 
-   public Login(String email, String login){
+   public LoginClass(String email, String login){
        this.email = email;
        this.senha_cod = senha_cod;
    }
