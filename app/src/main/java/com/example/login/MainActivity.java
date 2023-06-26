@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent i = new Intent(this, Quiz.class);
+        Intent i = new Intent(this, LoadingQuiz.class);
         startActivity(i);
         Login l = new Login("r", "123");
         SqlliteConnector dao = new SqlliteConnector(getApplicationContext());

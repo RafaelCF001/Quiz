@@ -13,7 +13,16 @@
         android:theme="@style/Theme.Login"
         tools:targetApi="31">
         <activity
-            android:name=".Loading"
+            android:name=".LoadingQuiz4"
+            android:exported="false" />
+        <activity
+            android:name=".LoadingQuiz3"
+            android:exported="false" />
+        <activity
+            android:name=".LoadingQuiz2"
+            android:exported="false" />
+        <activity
+            android:name=".LoadingQuiz"
             android:exported="false" />
         <activity
             android:name=".Quiz"
